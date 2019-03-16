@@ -1,4 +1,6 @@
+
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -34,9 +36,10 @@ class Processor(
                     val planet = fetchPlanet(id)
                     logger.info("> $id planet: ${planet.name}")
                     val filmUrls = planet.films
-                    val film = getFirstFilm(filmUrls)
-                    logger.info("> $id film: ${film?.title}")
-                    val emit = TargetModel(event.executionTime, id, planet.name, film?.title)
+                    val films = getAllFilms(filmUrls)
+                    val filmTitles = films.joinToString { film -> film.title }
+                    logger.info("> $id films: $filmTitles")
+                    val emit = TargetModel(event.executionTime, id, planet.name, filmTitles)
                     logger.info("emitting $emit")
                     producer.send(ProducerRecord(TARGET_TOPIC, emit))
                 }
@@ -49,11 +52,11 @@ class Processor(
         }
     }
 
-    private suspend fun getFirstFilm(films: List<String>): Film? {
+    private suspend fun getAllFilms(films: List<String>): List<Film> {
         return if (films.isEmpty()) {
-            null
+            emptyList()
         } else {
-            service.getFilmFullUrl(films[0]).await()
+            return films.map { service.getFilmFullUrl(it) }.awaitAll()
         }
     }
 
