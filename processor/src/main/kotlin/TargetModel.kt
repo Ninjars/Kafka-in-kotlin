@@ -20,4 +20,9 @@ class TargetModelSerializer : Serializer<TargetModel> {
     override fun close() {}
 }
 
-data class TargetModel(val sourceTime: Long, val data: String)
+data class TargetModel(
+    val sourceTime: Long,
+    val id: Int,
+    val planetName: String,
+    val filmTitle: String?
+)

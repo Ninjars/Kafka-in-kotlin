@@ -11,7 +11,8 @@ fun main(args: Array<String>) {
     val brokers = "localhost:9092"
     val consumer = createKafkaConsumer(brokers)
     val producer = createKafkaProducer(brokers)
-    val processor = Processor(consumer, producer)
+    val service = createService()
+    val processor = Processor(consumer, producer, service)
 
     var running = true
     while (running) {
