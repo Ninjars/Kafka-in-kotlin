@@ -38,4 +38,7 @@ To build the consumer in the processor folder execute
 Then execute the created jar with 
 `java -jar build/libs/kafka-processor-1.0.jar`
 
-
+To confirm emitted events, attach a console consumer back in the kafka directory:
+`bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic target-topic --from-beginning`
+or to confirm input events:
+`bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic seed-topic --from-beginning`
