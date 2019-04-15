@@ -42,3 +42,8 @@ To confirm emitted events, attach a console consumer back in the kafka directory
 `bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic target-topic --from-beginning`
 or to confirm input events:
 `bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic seed-topic --from-beginning`
+
+Credit
+=====
+
+Many thanks to https://swapi.co/ for providing a fun api that doesn't need authentication to use!
