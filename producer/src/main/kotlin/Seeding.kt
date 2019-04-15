@@ -10,7 +10,7 @@ import org.apache.log4j.LogManager
 import java.util.*
 import kotlin.concurrent.schedule
 
-class SeedEventGenerator(private val producer: KafkaProducer<String, SeedEvent>) {
+class SeedEventGenerator(private val topic: String, private val producer: KafkaProducer<String, SeedEvent>) {
     private val logger = LogManager.getLogger(javaClass)
 
     private var timer: Timer? = null
@@ -28,7 +28,7 @@ class SeedEventGenerator(private val producer: KafkaProducer<String, SeedEvent>)
                 val event = SeedEvent(scheduledExecutionTime())
                 logger.info("creating new event $event")
 
-                producer.send(ProducerRecord(SEED_TOPIC, event)).get()
+                producer.send(ProducerRecord(topic, event)).get()
                 if (count >= 0) {
                     iteration++
                     if (iteration >= count) {

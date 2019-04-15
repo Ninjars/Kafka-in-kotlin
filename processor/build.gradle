@@ -15,6 +15,9 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+    // arg parsing
+    compile 'com.xenomachina:kotlin-argparser:2.0.7'
+
     // networking
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'

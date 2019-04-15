@@ -1,4 +1,3 @@
-
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -9,6 +8,8 @@ import org.apache.log4j.LogManager
 import java.time.Duration
 
 class Processor(
+    subscribeTopic: String,
+    private val targetTopic: String,
     private val consumer: KafkaConsumer<String, SourceModel>,
     private val producer: KafkaProducer<String, TargetModel>,
     private val service: Service
@@ -19,7 +20,7 @@ class Processor(
     private var count = 0
 
     init {
-        consumer.subscribe(listOf(SEED_TOPIC))
+        consumer.subscribe(listOf(subscribeTopic))
     }
 
     fun poll(): Boolean {
@@ -34,14 +35,13 @@ class Processor(
                 GlobalScope.launch {
                     logger.info("> $id processing $event")
                     val planet = fetchPlanet(id)
-                    logger.info("> $id planet: ${planet.name}")
-                    val filmUrls = planet.films
-                    val films = getAllFilms(filmUrls)
+                    val films = getAllFilms(planet.films)
                     val filmTitles = films.joinToString { film -> film.title }
+                    logger.info("> $id planet: ${planet.name}")
                     logger.info("> $id films: $filmTitles")
                     val emit = TargetModel(event.executionTime, id, planet.name, filmTitles)
                     logger.info("emitting $emit")
-                    producer.send(ProducerRecord(TARGET_TOPIC, emit))
+                    producer.send(ProducerRecord(targetTopic, emit))
                 }
             }
             true
